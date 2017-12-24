@@ -1,0 +1,134 @@
+html{
+  font-size: 100%;
+  box-sizing: border-box;
+  color: #F1F2EB;
+  font-family: cursive;
+}
+
+body{
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto; 
+}
+
+main{
+  margin: 20px 0;
+  padding: 2em;
+}
+
+/* spinner */
+.spinner{
+  width: 2em;
+  height: 2em;
+  border-left: 2px solid red;
+  border-top: 2px solid red;
+  border-radius: 50%;
+  padding: 1em;
+  margin: 0 auto;
+  position: fixed;
+  animation: spinn .5s infinite;
+  left: 45%;
+  right: 45%;
+  top: 45%;
+  bottom: 45%;
+  display: none;
+  position: absolute;
+  z-index: 1;
+}
+
+.spinner::before{
+  box-shadow: 0 0 0 3000px rgba(0,0,0, .3), inset 0 0 0 3000px rgba(0,0,0, .3);
+  content: '';
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+}
+
+.spinner--active{
+  display: inline-block;
+}
+
+@keyframes spinn{
+  0%{ transform: rotate(40deg) }
+  12.5%{ transform: rotate(80deg) }
+  25%{ transform: rotate(120deg) }
+  37.5%{ transform: rotate(160deg) }
+  50%{ transform: rotate(200deg) }
+  62.5%{ transform: rotate(240deg) }
+  75%{ transform: rotate(280deg) }
+  87.5%{ transform: rotate(320deg) }
+  100%{ transform: rotate(360deg) }
+}
+
+.card{
+  width: 50%;
+  margin: 0 auto;
+  padding: 1em;
+  background-color: #004A5C;
+  border-style: solid;
+  border-color: #003643;
+  border-width: 3px; 
+  border-top-width: .8em;
+  border-radius: 0 0 1em 1em;
+  overflow: hidden;
+  position: relative;
+}
+
+.card__title{
+  font-size: 2em;
+  padding: .5em;
+}
+
+.card__quote{
+  font-size: 1.4em;
+  padding: 0 .5em;  
+}
+
+.card__social--facebook,
+.card__social--twitter{
+  font-size: 2.5em;
+  color: white;
+  text-align: center;
+  padding: .2em;
+  text-decoration: none;
+}
+
+.card__social--facebook:hover,
+.card__social--twitter:hover{
+  color: #dcdcd6;
+} 
+
+.card__author{
+  display: block;
+  margin: 1em;
+  padding: 1em;
+  text-align: right;
+}
+
+footer{
+  padding: .5em;
+  display: block;
+}
+
+.btn{
+  color: #DCDCD6;
+  width: auto;
+  height: 35px;
+  padding: 1.3em;
+  background-color: #5C1E40;
+  border: .1em solid #DCDCD6;
+  font-size: 1.3em;
+  line-height: 1%;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+}
+.btn:hover{
+  background-color: #6A3251;
+}
+
+.fr{
+  float: right;
+}
