@@ -1,47 +1,68 @@
-let $ = document.querySelector.bind(document);
+(function(){
 
-document.addEventListener('DOMContentLoaded', (e) => { loadCard(); });
+  const $ = document.querySelector.bind(document);
 
-$('.btn').addEventListener('click', (e) => { loadCard(); });
+  document.addEventListener('DOMContentLoaded', (e) => { loadCard(); });
 
-function loadCard(){
-  $('.spinner').classList.add('spinner--active');
-  getQuote().then((q) => {
-    let data = JSON.parse(q);
+  $('.btn').addEventListener('click', (e) => { loadCard(); });
+
+  const loadCard = () => {
+    $('.spinner').classList.add('spinner--active');
     
-    waitAndGetQuotes(200).then(() => {
+    Promise.all([getQuote(), waitAndGetQuotes(200)])
+    .then(q => {
+
+      const data = JSON.parse(q[0]);
+
+      manipulateSession(data);
+      
+      const quote = data.quote;
+      const author = data.author;
+
+      settingSharingButtons(data.quote, data.author);
+      
       $('.spinner').classList.remove('spinner--active');
-    }).then(() => {
-      $('.card__quote--text').innerText = data.quote;
-      $('.card__author').innerText = data.author;
-    })
-    .catch((e) => {
-      console.log(e);
-    });
-  }).catch((e) => {
-    console.log(e);
-  });
+      $('.card__quote').style.display = 'block';
+      $('.card__quote--text').innerText = quote;
+      $('.card__author').innerText = `- ${author}`;
+    }).catch((e) => { console.log(e); });
+  }
+
+const settingSharingButtons = (quote, author) =>{
+  let twitter = 'https://twitter.com/intent/tweet?hashtags=quotes&related=freecodecamp&text=' + encodeURIComponent(`" ${ quote } " ${ author }`);
+  let facebook = 'https://www.facebook.com/sharer/sharer.php?u=fabiopitte.com&quote=' + encodeURIComponent(`" ${ quote } " ${ author }`);
+  
+  $('a.card__social--twitter').href = twitter;
+  $('a.card__social--facebook').href = facebook;
 }
 
-const waitAndGetQuotes = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const waitAndGetQuotes = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-const getQuote = () => {
-  return new Promise((resolve, reject) => {
-    var xhr = new XMLHttpRequest();
+  const manipulateSession = (quote) => {
+    var quotesStorage = sessionStorage.getItem('quotes');
 
-    xhr.open('GET','https://andruxnet-random-famous-quotes.p.mashape.com/?cat=famous&count=1');
-    xhr.setRequestHeader("X-Mashape-Key", "mcQZU6ngnjmshYc0UcNg3BVMV5pqp156bP9jsna1QJQlEu79fM");
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.setRequestHeader("Accept", "application/json");
-    
-    xhr.onload = function() {
-      var responseText = xhr.responseText;
-      resolve(responseText);
-     };
-     
-     xhr.onerror = function() {
-       reject(xhr.statusText);
-     };
-    xhr.send();
-  });
-};
+      let quotes = [].concat(quote);
+
+      if(quotesStorage){ quotes.unshift(quotesStorage); }
+
+      sessionStorage.setItem('quotes', quotes);
+  }
+
+  const getQuote = () => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('GET','https://andruxnet-random-famous-quotes.p.mashape.com/?cat=famous&count=1');
+
+      xhr.setRequestHeader("X-Mashape-Key", "mcQZU6ngnjmshYc0UcNg3BVMV5pqp156bP9jsna1QJQlEu79fM");
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.setRequestHeader("Accept", "application/json");
+      
+      xhr.onload = () => resolve(xhr.responseText);
+      
+      xhr.onerror = () => reject(xhr.statusText);
+
+      xhr.send();
+    });
+  };
+})();
